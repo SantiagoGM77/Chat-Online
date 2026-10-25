@@ -5,7 +5,7 @@ import {htmlRegisterUser,htmlLoginUser,htmlHomeChat,htmlForAddNewContact,htmlHom
 const $ = selector=>document.querySelector(selector);
 const $$ = selector=>document.querySelectorAll(selector);
 
-const socket = io("https://tudominiodeelbackend.com",{
+const socket = io("https://chat-online-52ga.onrender.com",{
   autoConnect:false,
   withCredentials:true
 });
@@ -76,7 +76,7 @@ function changeOfPage () {
 changeOfPage()
 
 function getDataUser () {
-  fetch("https://tudominiodeelbackend.com/user",{
+  fetch("https://chat-online-52ga.onrender.com/user",{
     method:"GET",
     credentials:"include"
   }).then(res=>res.json()).then(data=>redirectToPathName(data))
@@ -151,7 +151,7 @@ function clickButtonLoginUser () {
     return;
   } else $PASSWORDERRORMSG.setAttribute("hidden","");
   
-  fetch("https://tudominiodeelbackend/login",{
+  fetch("https://chat-online-52ga.onrender.com/login",{
     method:"POST",
     credentials:"include",
     body:formData
@@ -213,8 +213,8 @@ function clickButtonCreateAccount () {
   const $USERNAMEERRORMSG = $(".texts-field-container .message-error.username"),
   $PASSWORDERRORMSG = $(".texts-field-container .message-error.password");
   
-  if (username.value.trim().length < 5) {
-    $USERNAMEERRORMSG.innerText = "El Nombre De Usuario Debe Contener Al Menos 5 Caracteres";
+  if (username.value.trim().length < 6) {
+    $USERNAMEERRORMSG.innerText = "El Nombre De Usuario Debe Contener Al Menos 6 Caracteres";
     
     $USERNAMEERRORMSG.removeAttribute("hidden");
     
@@ -222,8 +222,8 @@ function clickButtonCreateAccount () {
   }
   else $USERNAMEERRORMSG.setAttribute("hidden","");
   
-  if (password.value.trim().length < 5) {
-    $PASSWORDERRORMSG.innerText = "La Contraseña Debe Contener Al Menos 8 Caracteres";
+  if (password.value.trim().length < 6) {
+    $PASSWORDERRORMSG.innerText = "La Contraseña Debe Contener Al Menos 6 Caracteres";
     
     $PASSWORDERRORMSG.removeAttribute("hidden");
     
@@ -237,7 +237,7 @@ function clickButtonCreateAccount () {
   
   if ($FILE && $FILE.files[0]) formData.append("photoPerfil",$FILE.files[0])
   
-  fetch("https://tudominiodeelbackend/register",{
+  fetch("https://chat-online-52ga.onrender.com/register",{
     method:"POST",
     credentials:"include",
     body:formData
@@ -331,13 +331,22 @@ function clickContainerChat ({target}) {
     
     if (!$input.innerText.trim()) return;
     
-    $(".container-messages").insertAdjacentHTML("beforeend",htmlMyMessage($input.innerText,getFormattingOfTime(new Date()),"send"));
+    const $CONTAINERMESSAGES = $(".container-messages");
+    
+    $CONTAINERMESSAGES.insertAdjacentHTML("beforeend",htmlMyMessage($input.innerText,getFormattingOfTime(new Date()),"send"));
     
     let msgWithoutLineBreaks = $input.innerText.split("\n").join(" ");
     
     socket.emit("send-message",{idcontact,msg:msgWithoutLineBreaks});
     
     $input.innerText = "";
+    
+    let heightScroll = $CONTAINERMESSAGES.scrollHeight;
+    
+    $CONTAINERMESSAGES.scrollTo({
+      top:heightScroll,
+      behavior:"smooth"
+    })
   }
 }
 
@@ -393,9 +402,14 @@ function showMessagesChat (idcontact,username,urlPerfil) {
       
       $CONTAINERMESSAGES.insertAdjacentHTML("beforeend",htmlToInsert);
     })
+    
+    $CONTAINERMESSAGES.scrollTo({
+      top:$CONTAINERMESSAGES.scrollHeight
+      ,behavior:"auto"
+    })
   }
   
-  fetch(`https://tudominiodeelbackend/messages/${idcontact}`,{
+  fetch(`https://chat-online-52ga.onrender.com/messages/${idcontact}`,{
     method:"GET",
     credentials:"include"
   }).then(res=>res.json()).then(res=>{
@@ -570,6 +584,13 @@ function connectToServerSocket () {
         $CONTAINERMESSAGES.insertAdjacentHTML("beforeend",htmlMessageContact(msg,getFormattingOfTime(dateMessage)));
         
         socket.emit("change-status-message-received",{idcontact,statusMSG:"read"});
+        
+        let heightScroll = $CONTAINERMESSAGES.scrollHeight
+    
+        $CONTAINERMESSAGES.scrollTo({
+          top:heightScroll,
+          behavior:"smooth"
+        })
       }
       else socket.emit("change-status-message-received",{idcontact,statusMSG:"received"});
     })
@@ -644,7 +665,7 @@ function changePhotoPerfilInInfoUser ({currentTarget}) {
     
     form.append("photoPerfil",img);
     
-    fetch("https://tudominiodeelbackend/change-perfil",{
+    fetch("https://chat-online-52ga.onrender.com/change-perfil",{
       method:"PATCH",
       credentials:"include",
       body:form
@@ -662,7 +683,7 @@ function changePhotoPerfilInInfoUser ({currentTarget}) {
 function addAContactToUser () {
   let IDCONTACT = $("input#id-contact").value;
   
-  fetch(`https://tudominiodeelbackend/add-contact?idcontact=${IDCONTACT}`,{
+  fetch(`https://chat-online-52ga.onrender.com/add-contact?idcontact=${IDCONTACT}`,{
     method:"POST",
     credentials:"include"
   }).then(res=>res.json()).then(data=>{
