@@ -7,24 +7,23 @@ import {cloudinary} from "../config/cloudinary.js";
 
 export class Controller {
   static #setTokensInCookies (payload,res) {
-    //Lo recomendado seria 15 m y 7d el token refresh
     
-    const token = jwt.sign(payload,process.env["JWT_ACCESS_SECRET"],{expiresIn:"5m"})
+    const token = jwt.sign(payload,process.env["JWT_ACCESS_SECRET"],{expiresIn:"15m"})
     
-    const tokenRefresh = jwt.sign(payload,process.env["JWT_REFRESH_SECRET"],{expiresIn:"6m"});
+    const tokenRefresh = jwt.sign(payload,process.env["JWT_REFRESH_SECRET"],{expiresIn:"7d"});
   
     res.cookie("token",token,{
       httpOnly:true,
       secure:true,
       sameSite:"none",
-      maxAge:60000 * 5
+      maxAge:60000 * 15
     })
   
     res.cookie("tokenRefresh",tokenRefresh,{
       httpOnly:true,
       secure:true,
       sameSite:"none",
-      maxAge:60000 * 6
+      maxAge:60000 * 60 * 24 * 7
     })
   }
   
@@ -118,14 +117,18 @@ export class Controller {
     else if (req.session.error) return res.send({error:req.session.message});
   
     const {idUser} = req.session;
+    
+    if (idUser === idcontact) return res.send({
+      error:"You cannot add yourself"
+    })
   
     let existUser = await Model.existUser({idUser:idcontact});
   
     if (!existUser) return res.send({invalidContact:true});
   
-    await Model.addContactInDB({idUser,idcontact});
+    let contactAdded = await Model.addContactInDB({idUser,idcontact});
   
-    res.send({success:"added user"});
+    res.send({success:true,contactAdded});
   }
   
   static async changePerfil (req,res) {

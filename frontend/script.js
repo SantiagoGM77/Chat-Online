@@ -690,7 +690,7 @@ function addAContactToUser () {
     if (data.success) {
       window.history.pushState(null,"","/chat")
       getDataUser();
-      socket.emit("added-contact",IDCONTACT);
+      data.contactAdded ? socket.emit("added-contact",IDCONTACT) : ""
     }
     else console.log("sucedio un error",data)
   })

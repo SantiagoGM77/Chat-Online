@@ -69,7 +69,7 @@ export class Model {
   }
   static async addContactInDB ({idUser,idcontact}) {
     //AL AGREGAR CONTACTOS AMBOS USUARIOS DEBEN DE AGREGARSE EN SUS LISTA DE CONTACTOS
-    await CONTACTS.updateOne({idUser},{
+    let res = await CONTACTS.updateOne({idUser},{
       $addToSet:{contactsID:idcontact}
     })
     
@@ -91,7 +91,7 @@ export class Model {
       })
     }
     
-    return;
+    return res.modifiedCount > 0 ? true : false;
   }
   static async updatePerfilOfUser (idUser,url,filename) {
     await USERS.updateOne({idUser},{
