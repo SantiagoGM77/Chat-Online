@@ -58,6 +58,8 @@ app.patch("/change-perfil",upload.single("photoPerfil"),Controller.changePerfil)
 
 app.get("/messages/:id",Controller.messages)
 
+app.post("/logout",Controller.logoutUser)
+
 const server = http.createServer(app);
 
 const io = new Server (server,{

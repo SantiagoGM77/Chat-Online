@@ -376,7 +376,7 @@ function getLastTimeActiveContact (active) {
   
   let dayActive;
   
-  if (differenceDay === 0) dayActive = "hoy";
+  if (differenceDay <= 0) dayActive = "hoy";
   else if (differenceDay === 1) dayActive = "ayer"
   else return `ult. vez hace ${differenceDay} dias`;
   
@@ -497,6 +497,22 @@ function insertPagePerfilUser (idUser,username,urlPerfil,pushEndPointInHistory) 
   }
   
   $(".data-user-container .container-perfil").onclick = changePhotoPerfilInInfoUser;
+  
+  $(".data-user-container .container-logout").onclick = e => {
+    const {currentTarget,target} = e;
+    
+    //SOLO APLICA AL HACER CLICK AL PARRAFO O EL ICONO LOGOUT
+    
+    if (currentTarget !== target) {
+      fetch("https://chat-online-52ga.onrender.com/logout",{
+        method:"POST",
+        credentials:"include"
+      }).then(res=>res.json()).then(res=>{
+      //PARA INDICARLE QUE SE A CERRADO LA SESION
+       redirectToPathName({error:true})
+      }).catch()
+    }
+  }
   
   if (pushEndPointInHistory) window.history.pushState(null,"","/perfil");
 }

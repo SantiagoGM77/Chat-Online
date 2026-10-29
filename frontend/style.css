@@ -10,6 +10,7 @@
 
 body {
   font-family:sans-serif;
+  font-size:1em;
 }
 
 .container-register-user,.container-login-user,.home-aplication {
@@ -358,6 +359,7 @@ body {
 
 .data-user-container {
   gap:60px;
+  position:relative;
 }
 
 .data-user-container .container-perfil {
@@ -373,8 +375,21 @@ body {
 
 .data-user-container .container-datas {
   display:flex;
+  position:relative;
   flex-direction:column;
   gap:20px;
+  flex-grow:1;
+}
+
+.data-user-container .container-datas .container-logout {
+  margin-top:auto;
+  display:flex;
+  gap:5px;
+  align-items:center;
+}
+
+.data-user-container .container-datas .container-logout p {
+  color:#f35363;
 }
 
 .data-user-container .container-datas .container-data {

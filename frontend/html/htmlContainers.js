@@ -117,6 +117,10 @@ export function htmlInfoUser (id,username,urlPerfil,option) {
           <p class="value-data" id="id-user">${id}</p>
         </div>
       </div>
+      ${option === "Perfil" ? `<div class="container-logout">
+        <img src="./iconsSvg/logout-line-svgrepo-com.svg" alt="logout" />
+        <p>Cerrar Sesión</p>
+      </div>` : ""}
     </article>
   </section>`
 }

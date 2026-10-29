@@ -13,6 +13,7 @@ export class Controller {
     const tokenRefresh = jwt.sign(payload,process.env["JWT_REFRESH_SECRET"],{expiresIn:"7d"});
   
     res.cookie("token",token,{
+      path:"/",
       httpOnly:true,
       secure:true,
       sameSite:"none",
@@ -20,6 +21,7 @@ export class Controller {
     })
   
     res.cookie("tokenRefresh",tokenRefresh,{
+      path:"/",
       httpOnly:true,
       secure:true,
       sameSite:"none",
@@ -77,6 +79,27 @@ export class Controller {
     } : await Model.getAllDataUser(idUser);
   
     res.send(DATAUSER);
+  }
+  
+  static logoutUser (req,res) {
+    if (!req.session) return res.send({error:"need to log in"});
+    else if (req.session.error) return res.send({error:req.session.message});
+    
+    res.clearCookie("tokenRefresh",{
+      path:"/",
+      httpOnly:true,
+      secure:true,
+      sameSite:"none"
+    })
+    
+    res.clearCookie("token",{
+      path:"/",
+      httpOnly:true,
+      secure:true,
+      sameSite:"none"
+    })
+    
+    res.send({message:"Logout Succes"})
   }
   
   static async loginUser (req,res) {
